@@ -1,4 +1,4 @@
-import { IsString, IsNumber, Min } from 'class-validator';
+import { IsString, IsNumber, Min, IsUUID } from 'class-validator';
 
 export class CreateConcertDto {
   @IsString()
@@ -10,4 +10,9 @@ export class CreateConcertDto {
   @IsNumber()
   @Min(1)
   totalSeats: number;
+}
+
+export class ReserveSeatDto {
+  @IsUUID()
+  userId: string;
 }
