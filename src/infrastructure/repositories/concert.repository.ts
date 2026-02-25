@@ -7,15 +7,15 @@ import { Concert } from 'src/domain/entities/concert.entity';
 import { ConcertOrmEntity } from '../database/concert.model';
 
 @Injectable()
-export class ConcertTypeOrmRepository implements ConcertRepositoryModel {
+export class ConcertRepository implements ConcertRepositoryModel {
   constructor(
     @InjectRepository(ConcertOrmEntity)
-    private readonly repo: Repository<ConcertOrmEntity>,
+    private readonly concertRepository: Repository<ConcertOrmEntity>,
   ) {}
 
   async create(concert: Concert): Promise<Concert> {
-    const entity = this.repo.create(concert);
-    const saved = await this.repo.save(entity);
+    const entity = this.concertRepository.create(concert);
+    const saved = await this.concertRepository.save(entity);
 
     return new Concert(
       saved.id,
@@ -26,7 +26,7 @@ export class ConcertTypeOrmRepository implements ConcertRepositoryModel {
   }
 
   async findAll(): Promise<Concert[]> {
-    const data = await this.repo.find();
+    const data = await this.concertRepository.find();
 
     return data.map(
       (item) =>
@@ -35,7 +35,7 @@ export class ConcertTypeOrmRepository implements ConcertRepositoryModel {
   }
 
   async findById(id: string): Promise<Concert | null> {
-    const item = await this.repo.findOne({ where: { id } });
+    const item = await this.concertRepository.findOne({ where: { id } });
 
     if (!item) return null;
 
@@ -43,7 +43,7 @@ export class ConcertTypeOrmRepository implements ConcertRepositoryModel {
   }
 
   async delete(id: string): Promise<void> {
-    const result = await this.repo.delete(id);
+    const result = await this.concertRepository.delete(id);
 
     if (result.affected === 0) {
       throw new NotFoundException('Concert not found');
@@ -51,7 +51,7 @@ export class ConcertTypeOrmRepository implements ConcertRepositoryModel {
   }
 
   async sumTotalSeats(): Promise<number> {
-    const result = await this.repo
+    const result = await this.concertRepository
       .createQueryBuilder('concert')
       .select('SUM(concert.totalSeats)', 'sum')
       .getRawOne<{ sum: string | null }>();

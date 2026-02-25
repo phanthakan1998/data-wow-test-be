@@ -39,8 +39,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       }
     }
 
-    console.log(exception);
-
     response.status(status).json({
       success: false,
       statusCode: status,

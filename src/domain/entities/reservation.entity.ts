@@ -3,5 +3,6 @@ export class Reservation {
     public readonly id: string,
     public readonly concertId: string,
     public readonly userId: string,
+    public readonly isCanceled: boolean,
   ) {}
 }

@@ -6,7 +6,7 @@ import { Reservation } from 'src/domain/entities/reservation.entity';
 import { ReservationOrmEntity } from '../database/reservation.model';
 
 @Injectable()
-export class ReservationTypeOrmRepository implements ReservationRepositoryModel {
+export class ReservationRepository implements ReservationRepositoryModel {
   constructor(
     @InjectRepository(ReservationOrmEntity)
     private readonly reservationRepository: Repository<ReservationOrmEntity>,
@@ -16,10 +16,16 @@ export class ReservationTypeOrmRepository implements ReservationRepositoryModel 
     const data = await this.reservationRepository.find();
 
     return data.map(
-      (item) => new Reservation(item.id, item.concertId, item.userId),
+      (item) =>
+        new Reservation(item.id, item.concertId, item.userId, item.isCanceled),
     );
   }
-  //TODO delete clear all reseve
+
+  async countByStatus(isCanceled: boolean): Promise<number> {
+    return this.reservationRepository.count({
+      where: { isCanceled },
+    });
+  }
 
   async create(reservation: Reservation): Promise<Reservation> {
     const orm = this.reservationRepository.create({
@@ -30,21 +36,12 @@ export class ReservationTypeOrmRepository implements ReservationRepositoryModel 
 
     const saved = await this.reservationRepository.save(orm);
 
-    return new Reservation(saved.id, saved.concertId, saved.userId);
-  }
-
-  async cancelByConcertAndUser(
-    concertId: string,
-    userId: string,
-  ): Promise<void> {
-    const result = await this.reservationRepository.update(
-      { concertId, userId },
-      { isCanceled: true },
+    return new Reservation(
+      saved.id,
+      saved.concertId,
+      saved.userId,
+      saved.isCanceled,
     );
-
-    if (result.affected === 0) {
-      throw new NotFoundException('Reservation not found');
-    }
   }
 
   async findByUser(userId: string): Promise<Reservation[]> {
@@ -53,7 +50,8 @@ export class ReservationTypeOrmRepository implements ReservationRepositoryModel 
     });
 
     return data.map(
-      (item) => new Reservation(item.id, item.concertId, item.userId),
+      (item) =>
+        new Reservation(item.id, item.concertId, item.userId, item.isCanceled),
     );
   }
 
@@ -63,7 +61,8 @@ export class ReservationTypeOrmRepository implements ReservationRepositoryModel 
     });
 
     return data.map(
-      (item) => new Reservation(item.id, item.concertId, item.userId),
+      (item) =>
+        new Reservation(item.id, item.concertId, item.userId, item.isCanceled),
     );
   }
 
@@ -77,30 +76,30 @@ export class ReservationTypeOrmRepository implements ReservationRepositoryModel 
 
     if (!item) return null;
 
-    return new Reservation(item.id, item.concertId, item.userId);
+    return new Reservation(
+      item.id,
+      item.concertId,
+      item.userId,
+      item.isCanceled,
+    );
   }
 
   async countByConcert(concertId: string): Promise<number> {
     return this.reservationRepository.count({
-      where: { concertId },
+      where: {
+        concertId,
+        isCanceled: false,
+      },
     });
   }
-  async countActive(): Promise<number> {
-    return this.reservationRepository.count({
-      where: { isCanceled: false },
-    });
-  }
-
-  async countCanceled(): Promise<number> {
-    return this.reservationRepository.count({
-      where: { isCanceled: true },
-    });
-  }
-
-  async cancelReservation(concertId: string, userId: string): Promise<void> {
+  async updateReservationStatus(
+    concertId: string,
+    userId: string,
+    isCanceled: boolean,
+  ): Promise<void> {
     const result = await this.reservationRepository.update(
-      { concertId, userId, isCanceled: false },
-      { isCanceled: true },
+      { concertId, userId },
+      { isCanceled },
     );
 
     if (!result.affected) {
@@ -113,6 +112,9 @@ export class ReservationTypeOrmRepository implements ReservationRepositoryModel 
       .createQueryBuilder('reservation')
       .select('reservation.concertId', 'concertId')
       .addSelect('COUNT(reservation.id)', 'count')
+      .where('reservation.isCanceled = :isCanceled', {
+        isCanceled: false,
+      })
       .groupBy('reservation.concertId')
       .getRawMany<{ concertId: string; count: string }>();
 
@@ -123,5 +125,9 @@ export class ReservationTypeOrmRepository implements ReservationRepositoryModel 
     });
 
     return map;
+  }
+
+  async deleteByConcert(concertId: string): Promise<void> {
+    await this.reservationRepository.delete({ concertId });
   }
 }

@@ -3,11 +3,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ConcertOrmEntity } from 'src/infrastructure/database/concert.model';
 import { ReservationOrmEntity } from 'src/infrastructure/database/reservation.model';
-import { ConcertTypeOrmRepository } from 'src/infrastructure/repositories/concert.repository';
-import { ReservationTypeOrmRepository } from 'src/infrastructure/repositories/reservation.repository';
+import { ConcertRepository } from 'src/infrastructure/repositories/concert.repository';
+import { ReservationRepository } from 'src/infrastructure/repositories/reservation.repository';
 import { ReservationUseCase } from './reservation.usecase';
 import { ReservationController } from 'src/presentation/controllers/reservation.controller';
-import { HistoryTypeOrmRepository } from 'src/infrastructure/repositories/history.repository';
+import { HistoryRepository } from 'src/infrastructure/repositories/history.repository';
 import { HistoryOrmEntity } from 'src/infrastructure/database/history.model';
 
 @Module({
@@ -20,27 +20,23 @@ import { HistoryOrmEntity } from 'src/infrastructure/database/history.model';
   ],
   controllers: [ReservationController],
   providers: [
-    ConcertTypeOrmRepository,
-    ReservationTypeOrmRepository,
-    HistoryTypeOrmRepository,
+    ConcertRepository,
+    ReservationRepository,
+    HistoryRepository,
 
     {
       provide: ReservationUseCase,
       useFactory: (
-        concertRepository: ConcertTypeOrmRepository,
-        reservationRepository: ReservationTypeOrmRepository,
-        historyRepository: HistoryTypeOrmRepository,
+        concertRepository: ConcertRepository,
+        reservationRepository: ReservationRepository,
+        historyRepository: HistoryRepository,
       ) =>
         new ReservationUseCase(
           concertRepository,
           reservationRepository,
           historyRepository,
         ),
-      inject: [
-        ConcertTypeOrmRepository,
-        ReservationTypeOrmRepository,
-        HistoryTypeOrmRepository,
-      ],
+      inject: [ConcertRepository, ReservationRepository, HistoryRepository],
     },
   ],
 })

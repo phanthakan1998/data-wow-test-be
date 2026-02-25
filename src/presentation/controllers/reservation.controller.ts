@@ -2,10 +2,7 @@ import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 
 import { ReservationUseCase } from 'src/use-cases/reservation/reservation.usecase';
 import { ReserveSeatDto } from '../dto/request/reservation-request.dto';
-import {
-  IReserveSeatResponseDto,
-  IUserConsertResponseDto,
-} from '../dto/response/reseveration-respose.dto';
+import { IUserConsertResponseDto } from '../dto/response/reseveration-respose.dto';
 
 @Controller('reservation')
 export class ReservationController {
@@ -19,18 +16,8 @@ export class ReservationController {
   }
 
   @Post('reserve')
-  async reserve(@Body() dto: ReserveSeatDto): Promise<IReserveSeatResponseDto> {
-    const result = await this.reservationUseCase.reserveSeat(
-      dto.concertId,
-      dto.userId,
-    );
-    const response = {
-      id: result.id,
-      concertId: result.concertId,
-      userId: result.userId,
-    };
-
-    return response;
+  async reserve(@Body() dto: ReserveSeatDto): Promise<void> {
+    await this.reservationUseCase.reserveSeat(dto.concertId, dto.userId);
   }
 
   @Patch('cancel')

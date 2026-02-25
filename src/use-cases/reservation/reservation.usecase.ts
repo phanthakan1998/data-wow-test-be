@@ -16,7 +16,7 @@ export class ReservationUseCase {
     private readonly historyRepository: HistoryRepositoryModel,
   ) {}
 
-  async reserveSeat(concertId: string, userId: string): Promise<Reservation> {
+  async reserveSeat(concertId: string, userId: string): Promise<void> {
     const concert = await this.concertRepository.findById(concertId);
 
     if (!concert) {
@@ -28,7 +28,7 @@ export class ReservationUseCase {
       userId,
     );
 
-    if (existing) {
+    if (existing?.isCanceled === false) {
       throw new BadRequestException(
         'User already reserved a seat for this concert',
       );
@@ -40,29 +40,45 @@ export class ReservationUseCase {
       throw new BadRequestException('No seats available');
     }
 
-    const reservation = new Reservation(randomUUID(), concertId, userId);
+    if (existing) {
+      await this.reservationRepository.updateReservationStatus(
+        concertId,
+        userId,
+        false,
+      );
+    } else {
+      const reservation = new Reservation(
+        randomUUID(),
+        concertId,
+        userId,
+        true,
+      );
 
-    const savedReservation =
       await this.reservationRepository.create(reservation);
+    }
 
     const userName = 'John';
 
     const history = new HistoryLog(
       randomUUID(),
       concert.name,
-      userId,
       userName,
+      userId,
       HistoryAction.RESERVE,
       new Date(),
     );
 
     await this.historyRepository.create(history);
 
-    return savedReservation;
+    return;
   }
 
   async cancelReservation(concertId: string, userId: string): Promise<void> {
-    await this.reservationRepository.cancelByConcertAndUser(concertId, userId);
+    await this.reservationRepository.updateReservationStatus(
+      concertId,
+      userId,
+      true,
+    );
   }
 
   async getUserReservations(
@@ -79,14 +95,18 @@ export class ReservationUseCase {
     return allConcerts.map((concert) => {
       const reservedCount = reservationCounts[concert.id] ?? 0;
 
-      const isReservedByUser = userReservations.some(
+      const reservation = userReservations.find(
         (item) => item.concertId === concert.id,
       );
 
       let status: ConcertStatus;
 
-      if (isReservedByUser) {
-        status = ConcertStatus.RESERVED;
+      if (reservation) {
+        if (!reservation.isCanceled) {
+          status = ConcertStatus.RESERVED;
+        } else {
+          status = ConcertStatus.CANCELED;
+        }
       } else if (concert.isFullyBooked(reservedCount)) {
         status = ConcertStatus.FULL;
       } else {

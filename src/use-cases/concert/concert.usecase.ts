@@ -29,6 +29,7 @@ export class ConcertUseCase {
   }
 
   async deleteConcert(id: string): Promise<void> {
+    await this.reservationRepository.deleteByConcert(id);
     await this.concertRepository.delete(id);
   }
 
@@ -38,8 +39,8 @@ export class ConcertUseCase {
 
   async getDashboardSummary(): Promise<IDashBoardResponseDto> {
     const totalSeats = await this.concertRepository.sumTotalSeats();
-    const totalReserved = await this.reservationRepository.countActive();
-    const totalCanceled = await this.reservationRepository.countCanceled();
+    const totalReserved = await this.reservationRepository.countByStatus(true);
+    const totalCanceled = await this.reservationRepository.countByStatus(false);
 
     return {
       totalSeats,

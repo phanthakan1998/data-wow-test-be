@@ -3,15 +3,19 @@ import { Reservation } from '../entities/reservation.entity';
 export interface ReservationRepositoryModel {
   findAll(): Promise<Reservation[]>;
   create(reservation: Reservation): Promise<Reservation>;
-  cancelByConcertAndUser(concertId: string, userId: string): Promise<void>;
   findByUser(userId: string): Promise<Reservation[]>;
   findByConcert(concertId: string): Promise<Reservation[]>;
-  countByConcert(concertId: string): Promise<number>;
   findByConcertAndUser(
     concertId: string,
     userId: string,
   ): Promise<Reservation | null>;
-  countActive(): Promise<number>;
-  countCanceled(): Promise<number>;
+  countByConcert(concertId: string): Promise<number>;
+  countByStatus(isCanceled: boolean): Promise<number>;
   countGroupByConcert(): Promise<Record<string, number>>;
+  updateReservationStatus(
+    concertId: string,
+    userId: string,
+    isCanceled: boolean,
+  ): Promise<void>;
+  deleteByConcert(concertId: string): Promise<void>;
 }

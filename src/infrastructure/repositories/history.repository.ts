@@ -6,14 +6,14 @@ import { HistoryLog } from 'src/domain/entities/history.entity';
 import { HistoryRepositoryModel } from 'src/domain/repositories/history.repository';
 
 @Injectable()
-export class HistoryTypeOrmRepository implements HistoryRepositoryModel {
+export class HistoryRepository implements HistoryRepositoryModel {
   constructor(
     @InjectRepository(HistoryOrmEntity)
-    private readonly repo: Repository<HistoryOrmEntity>,
+    private readonly historyRepository: Repository<HistoryOrmEntity>,
   ) {}
 
   async create(history: HistoryLog): Promise<HistoryLog> {
-    const entity = this.repo.create({
+    const entity = this.historyRepository.create({
       id: history.id,
       concertName: history.concertName,
       userName: history.userName,
@@ -22,7 +22,7 @@ export class HistoryTypeOrmRepository implements HistoryRepositoryModel {
       createdAt: history.createdAt,
     });
 
-    const saved = await this.repo.save(entity);
+    const saved = await this.historyRepository.save(entity);
 
     return new HistoryLog(
       saved.id,
@@ -35,7 +35,7 @@ export class HistoryTypeOrmRepository implements HistoryRepositoryModel {
   }
 
   async findAll(): Promise<HistoryLog[]> {
-    const records = await this.repo.find({
+    const records = await this.historyRepository.find({
       order: { createdAt: 'DESC' },
     });
 
