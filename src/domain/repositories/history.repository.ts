@@ -1,6 +1,6 @@
 import { HistoryLog } from '../entities/history.entity';
 
-export interface HistoryRepository {
+export interface HistoryRepositoryModel {
   create(history: HistoryLog): Promise<HistoryLog>;
   findAll(): Promise<HistoryLog[]>;
 }

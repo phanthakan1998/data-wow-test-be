@@ -3,10 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { HistoryOrmEntity } from '../database/history.model';
 import { HistoryLog } from 'src/domain/entities/history.entity';
-import { HistoryRepository } from 'src/domain/repositories/history.repository';
+import { HistoryRepositoryModel } from 'src/domain/repositories/history.repository';
 
 @Injectable()
-export class HistoryTypeOrmRepository implements HistoryRepository {
+export class HistoryTypeOrmRepository implements HistoryRepositoryModel {
   constructor(
     @InjectRepository(HistoryOrmEntity)
     private readonly repo: Repository<HistoryOrmEntity>,

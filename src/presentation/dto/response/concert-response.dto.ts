@@ -1,15 +1,12 @@
-import { Concert } from 'src/domain/entities/concert.entity';
-
-export class ConcertResponseDto {
+export interface IConcertResponseDto {
   id: string;
   name: string;
   description: string;
   totalSeats: number;
+}
 
-  constructor(concert: Concert) {
-    this.id = concert.id;
-    this.name = concert.name;
-    this.description = concert.description;
-    this.totalSeats = concert.totalSeats;
-  }
+export interface IDashBoardResponseDto {
+  totalSeats: number;
+  totalReserved: number;
+  totalCanceled: number;
 }

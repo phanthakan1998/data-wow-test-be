@@ -1,15 +1,17 @@
 import { randomUUID } from 'crypto';
 import { Concert } from 'src/domain/entities/concert.entity';
 import { HistoryLog } from 'src/domain/entities/history.entity';
-import { ConcertRepository } from 'src/domain/repositories/concert.repository';
-import { HistoryRepository } from 'src/domain/repositories/history.repository';
-import { ReservationRepository } from 'src/domain/repositories/reservation.repository';
+import { Reservation } from 'src/domain/entities/reservation.entity';
+import { ConcertRepositoryModel } from 'src/domain/repositories/concert.repository';
+import { HistoryRepositoryModel } from 'src/domain/repositories/history.repository';
+import { ReservationRepositoryModel } from 'src/domain/repositories/reservation.repository';
+import { IDashBoardResponseDto } from 'src/presentation/dto/response/concert-response.dto';
 
 export class ConcertUseCase {
   constructor(
-    private readonly concertRepository: ConcertRepository,
-    private readonly reservationRepository: ReservationRepository,
-    private readonly historyRepository: HistoryRepository,
+    private readonly concertRepository: ConcertRepositoryModel,
+    private readonly reservationRepository: ReservationRepositoryModel,
+    private readonly historyRepository: HistoryRepositoryModel,
   ) {}
 
   async create(
@@ -30,11 +32,11 @@ export class ConcertUseCase {
     await this.concertRepository.delete(id);
   }
 
-  async getAllReservations() {
+  async getAllReservations(): Promise<Reservation[]> {
     return this.reservationRepository.findAll();
   }
 
-  async getDashboardSummary() {
+  async getDashboardSummary(): Promise<IDashBoardResponseDto> {
     const totalSeats = await this.concertRepository.sumTotalSeats();
     const totalReserved = await this.reservationRepository.countActive();
     const totalCanceled = await this.reservationRepository.countCanceled();

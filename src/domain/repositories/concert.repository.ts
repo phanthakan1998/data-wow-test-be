@@ -1,6 +1,6 @@
 import { Concert } from '../entities/concert.entity';
 
-export interface ConcertRepository {
+export interface ConcertRepositoryModel {
   create(concert: Concert): Promise<Concert>;
   findAll(): Promise<Concert[]>;
   findById(id: string): Promise<Concert | null>;

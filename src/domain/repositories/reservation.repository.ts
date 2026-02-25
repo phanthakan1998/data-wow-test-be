@@ -1,9 +1,9 @@
 import { Reservation } from '../entities/reservation.entity';
 
-export interface ReservationRepository {
+export interface ReservationRepositoryModel {
   findAll(): Promise<Reservation[]>;
   create(reservation: Reservation): Promise<Reservation>;
-  deleteByConcertAndUser(concertId: string, userId: string): Promise<void>;
+  cancelByConcertAndUser(concertId: string, userId: string): Promise<void>;
   findByUser(userId: string): Promise<Reservation[]>;
   findByConcert(concertId: string): Promise<Reservation[]>;
   countByConcert(concertId: string): Promise<number>;

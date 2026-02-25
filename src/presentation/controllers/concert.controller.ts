@@ -2,31 +2,34 @@ import { Controller, Get, Post, Delete, Param, Body } from '@nestjs/common';
 
 import { ConcertUseCase } from 'src/use-cases/concert/concert.usecase';
 import { CreateConcertDto } from '../dto/request/concert-request.dto';
-import { ConcertResponseDto } from '../dto/response/concert-response.dto';
+import {
+  IConcertResponseDto,
+  IDashBoardResponseDto,
+} from '../dto/response/concert-response.dto';
+import { HistoryLog } from 'src/domain/entities/history.entity';
 
 @Controller('concerts')
 export class ConcertController {
   constructor(private readonly concertUseCase: ConcertUseCase) {}
 
   @Post()
-  async create(@Body() dto: CreateConcertDto) {
+  async create(@Body() req: CreateConcertDto): Promise<IConcertResponseDto> {
     const concert = await this.concertUseCase.create(
-      dto.name,
-      dto.description,
-      dto.totalSeats,
+      req.name,
+      req.description,
+      req.totalSeats,
     );
-
-    return new ConcertResponseDto(concert);
+    return concert;
   }
 
   @Get()
-  async findAll() {
+  async findAll(): Promise<IConcertResponseDto[]> {
     const concerts = await this.concertUseCase.getAll();
-    return concerts.map((item) => new ConcertResponseDto(item));
+    return concerts;
   }
 
   @Get('dashboard/summary')
-  getSummary() {
+  getSummary(): Promise<IDashBoardResponseDto> {
     return this.concertUseCase.getDashboardSummary();
   }
 
@@ -36,7 +39,7 @@ export class ConcertController {
   }
 
   @Get('history')
-  async getAllHisory() {
+  async getAllHisory(): Promise<HistoryLog[]> {
     const historyLogs = await this.concertUseCase.getHistory();
     return historyLogs;
   }

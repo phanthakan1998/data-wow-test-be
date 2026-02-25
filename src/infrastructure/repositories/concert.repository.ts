@@ -2,12 +2,12 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { ConcertRepository } from 'src/domain/repositories/concert.repository';
+import { ConcertRepositoryModel } from 'src/domain/repositories/concert.repository';
 import { Concert } from 'src/domain/entities/concert.entity';
 import { ConcertOrmEntity } from '../database/concert.model';
 
 @Injectable()
-export class ConcertTypeOrmRepository implements ConcertRepository {
+export class ConcertTypeOrmRepository implements ConcertRepositoryModel {
   constructor(
     @InjectRepository(ConcertOrmEntity)
     private readonly repo: Repository<ConcertOrmEntity>,
