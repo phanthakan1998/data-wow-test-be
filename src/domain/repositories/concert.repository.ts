@@ -5,4 +5,5 @@ export interface ConcertRepository {
   findAll(): Promise<Concert[]>;
   findById(id: string): Promise<Concert | null>;
   delete(id: string): Promise<void>;
+  sumTotalSeats(): Promise<number>;
 }

@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 
 import { ConcertRepository } from 'src/domain/repositories/concert.repository';
 import { Concert } from 'src/domain/entities/concert.entity';
-import { ConcertOrmEntity } from '../database/concert.orm-entity';
+import { ConcertOrmEntity } from '../database/concert.model';
 
 @Injectable()
 export class ConcertTypeOrmRepository implements ConcertRepository {
@@ -48,5 +48,14 @@ export class ConcertTypeOrmRepository implements ConcertRepository {
     if (result.affected === 0) {
       throw new NotFoundException('Concert not found');
     }
+  }
+
+  async sumTotalSeats(): Promise<number> {
+    const result = await this.repo
+      .createQueryBuilder('concert')
+      .select('SUM(concert.totalSeats)', 'sum')
+      .getRawOne<{ sum: string | null }>();
+
+    return Number(result?.sum ?? 0);
   }
 }

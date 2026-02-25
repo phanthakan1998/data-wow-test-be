@@ -1,10 +1,7 @@
 import { Controller, Get, Post, Delete, Param, Body } from '@nestjs/common';
 
 import { ConcertUseCase } from 'src/use-cases/concert/concert.usecase';
-import {
-  CreateConcertDto,
-  ReserveSeatDto,
-} from '../dto/request/concert-request.dto';
+import { CreateConcertDto } from '../dto/request/concert-request.dto';
 import { ConcertResponseDto } from '../dto/response/concert-response.dto';
 
 @Controller('concerts')
@@ -28,33 +25,13 @@ export class ConcertController {
     return concerts.map((item) => new ConcertResponseDto(item));
   }
 
+  @Get('dashboard/summary')
+  getSummary() {
+    return this.concertUseCase.getDashboardSummary();
+  }
+
   @Delete(':id')
   async delete(@Param('id') id: string) {
     await this.concertUseCase.deleteConcert(id);
-  }
-
-  @Post(':id/reserve')
-  async reserve(@Param('id') concertId: string, @Body() dto: ReserveSeatDto) {
-    return this.concertUseCase.reserveSeat(concertId, dto.userId);
-  }
-
-  @Delete(':id/reserve')
-  async cancel(@Param('id') concertId: string, @Body() dto: ReserveSeatDto) {
-    await this.concertUseCase.cancelReservation(concertId, dto.userId);
-  }
-
-  @Get('users/:userId/reservations')
-  async userReservations(@Param('userId') userId: string) {
-    return this.concertUseCase.getUserReservations(userId);
-  }
-
-  @Get(':id/reservations')
-  async concertReservations(@Param('id') concertId: string) {
-    return this.concertUseCase.getConcertReservations(concertId);
-  }
-
-  @Get('/reservations/all')
-  async allReservations() {
-    return this.concertUseCase.getAllReservations();
   }
 }

@@ -5,4 +5,8 @@ export class Concert {
     public description: string,
     public totalSeats: number,
   ) {}
+
+  isFullyBooked(reservedCount: number): boolean {
+    return reservedCount >= this.totalSeats;
+  }
 }

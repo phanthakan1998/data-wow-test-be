@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ReservationRepository } from 'src/domain/repositories/reservation.repository';
 import { Reservation } from 'src/domain/entities/reservation.entity';
-import { ReservationOrmEntity } from '../database/reservation.orm-entity';
+import { ReservationOrmEntity } from '../database/reservation.model';
 
 @Injectable()
 export class ReservationTypeOrmRepository implements ReservationRepository {
@@ -83,5 +83,44 @@ export class ReservationTypeOrmRepository implements ReservationRepository {
     return this.repo.count({
       where: { concertId },
     });
+  }
+  async countActive(): Promise<number> {
+    return this.repo.count({
+      where: { isCanceled: false },
+    });
+  }
+
+  async countCanceled(): Promise<number> {
+    return this.repo.count({
+      where: { isCanceled: true },
+    });
+  }
+
+  async cancelReservation(concertId: string, userId: string): Promise<void> {
+    const result = await this.repo.update(
+      { concertId, userId, isCanceled: false },
+      { isCanceled: true },
+    );
+
+    if (!result.affected) {
+      throw new NotFoundException('Reservation not found');
+    }
+  }
+
+  async countGroupByConcert(): Promise<Record<string, number>> {
+    const result = await this.repo
+      .createQueryBuilder('reservation')
+      .select('reservation.concertId', 'concertId')
+      .addSelect('COUNT(reservation.id)', 'count')
+      .groupBy('reservation.concertId')
+      .getRawMany<{ concertId: string; count: string }>();
+
+    const map: Record<string, number> = {};
+
+    result.forEach((row) => {
+      map[row.concertId] = Number(row.count);
+    });
+
+    return map;
   }
 }

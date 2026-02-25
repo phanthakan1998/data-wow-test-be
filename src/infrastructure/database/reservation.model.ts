@@ -20,4 +20,7 @@ export class ReservationOrmEntity {
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
+
+  @Column({ default: false })
+  isCanceled: boolean;
 }

@@ -11,4 +11,7 @@ export interface ReservationRepository {
     concertId: string,
     userId: string,
   ): Promise<Reservation | null>;
+  countActive(): Promise<number>;
+  countCanceled(): Promise<number>;
+  countGroupByConcert(): Promise<Record<string, number>>;
 }
