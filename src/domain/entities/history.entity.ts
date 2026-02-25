@@ -5,6 +5,7 @@ export class HistoryLog {
     public readonly id: string,
     public concertName: string,
     public userName: string,
+    public userId: string,
     public action: HistoryAction,
     public createdAt: Date,
   ) {}

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 
 import { ReservationUseCase } from 'src/use-cases/reservation/reservation.usecase';
 import { ReserveSeatDto } from '../dto/request/reservation-request.dto';
@@ -13,13 +13,13 @@ export class ReservationController {
     return this.reservationUseCase.getUserReservations(userId);
   }
 
-  @Post(':id/reserve')
-  async reserve(@Param('id') concertId: string, @Body() dto: ReserveSeatDto) {
-    return this.reservationUseCase.reserveSeat(concertId, dto.userId);
+  @Post('reserve')
+  async reserve(@Body() dto: ReserveSeatDto) {
+    return this.reservationUseCase.reserveSeat(dto.concertId, dto.userId);
   }
 
-  @Delete(':id/reserve')
-  async cancel(@Param('id') concertId: string, @Body() dto: ReserveSeatDto) {
-    await this.reservationUseCase.cancelReservation(concertId, dto.userId);
+  @Patch('cancel')
+  async cancel(@Body() dto: ReserveSeatDto) {
+    await this.reservationUseCase.cancelReservation(dto.concertId, dto.userId);
   }
 }

@@ -43,10 +43,13 @@ export class ReservationUseCase {
 
     const saved = await this.reservationRepository.create(reservation);
 
+    const userName = 'John';
+
     const history = new HistoryLog(
       randomUUID(),
       concert.name,
       userId,
+      userName,
       HistoryAction.RESERVE,
       new Date(),
     );

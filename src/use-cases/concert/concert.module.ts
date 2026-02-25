@@ -28,8 +28,13 @@ import { HistoryTypeOrmRepository } from 'src/infrastructure/repositories/histor
       useFactory: (
         concertRepo: ConcertTypeOrmRepository,
         reservationRepo: ReservationTypeOrmRepository,
-      ) => new ConcertUseCase(concertRepo, reservationRepo),
-      inject: [ConcertTypeOrmRepository, ReservationTypeOrmRepository],
+        historyRepository: HistoryTypeOrmRepository,
+      ) => new ConcertUseCase(concertRepo, reservationRepo, historyRepository),
+      inject: [
+        ConcertTypeOrmRepository,
+        ReservationTypeOrmRepository,
+        HistoryTypeOrmRepository,
+      ],
     },
   ],
 })

@@ -18,6 +18,8 @@ export class HistoryOrmEntity {
 
   @Column({ type: 'varchar' })
   userName: string;
+  @Column({ type: 'varchar' })
+  userId: string;
 
   @Column({ type: 'varchar' })
   action: HistoryAction;

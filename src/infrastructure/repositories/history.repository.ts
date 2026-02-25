@@ -17,6 +17,7 @@ export class HistoryTypeOrmRepository implements HistoryRepository {
       id: history.id,
       concertName: history.concertName,
       userName: history.userName,
+      userId: history.userId,
       action: history.action,
       createdAt: history.createdAt,
     });
@@ -27,6 +28,7 @@ export class HistoryTypeOrmRepository implements HistoryRepository {
       saved.id,
       saved.concertName,
       saved.userName,
+      saved.userId,
       saved.action,
       saved.createdAt,
     );
@@ -43,6 +45,7 @@ export class HistoryTypeOrmRepository implements HistoryRepository {
           item.id,
           item.concertName,
           item.userName,
+          item.userId,
           item.action,
           item.createdAt,
         ),

@@ -1,12 +1,15 @@
 import { randomUUID } from 'crypto';
 import { Concert } from 'src/domain/entities/concert.entity';
+import { HistoryLog } from 'src/domain/entities/history.entity';
 import { ConcertRepository } from 'src/domain/repositories/concert.repository';
+import { HistoryRepository } from 'src/domain/repositories/history.repository';
 import { ReservationRepository } from 'src/domain/repositories/reservation.repository';
 
 export class ConcertUseCase {
   constructor(
     private readonly concertRepository: ConcertRepository,
     private readonly reservationRepository: ReservationRepository,
+    private readonly historyRepository: HistoryRepository,
   ) {}
 
   async create(
@@ -41,5 +44,9 @@ export class ConcertUseCase {
       totalReserved,
       totalCanceled,
     };
+  }
+
+  async getHistory(): Promise<HistoryLog[]> {
+    return this.historyRepository.findAll();
   }
 }

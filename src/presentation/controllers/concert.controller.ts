@@ -34,4 +34,10 @@ export class ConcertController {
   async delete(@Param('id') id: string) {
     await this.concertUseCase.deleteConcert(id);
   }
+
+  @Get('history')
+  async getAllHisory() {
+    const historyLogs = await this.concertUseCase.getHistory();
+    return historyLogs;
+  }
 }
