@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { HistoryOrmEntity } from '../database/history.model';
+import { HistoryEntityModel } from '../database/history.model';
 import { HistoryLog } from 'src/domain/entities/history.entity';
 import { HistoryRepositoryModel } from 'src/domain/repositories/history.repository';
 
 @Injectable()
 export class HistoryRepository implements HistoryRepositoryModel {
   constructor(
-    @InjectRepository(HistoryOrmEntity)
-    private readonly historyRepository: Repository<HistoryOrmEntity>,
+    @InjectRepository(HistoryEntityModel)
+    private readonly historyRepository: Repository<HistoryEntityModel>,
   ) {}
 
   async create(history: HistoryLog): Promise<HistoryLog> {
@@ -22,15 +22,15 @@ export class HistoryRepository implements HistoryRepositoryModel {
       createdAt: history.createdAt,
     });
 
-    const saved = await this.historyRepository.save(entity);
+    const savedResult = await this.historyRepository.save(entity);
 
     return new HistoryLog(
-      saved.id,
-      saved.concertName,
-      saved.userName,
-      saved.userId,
-      saved.action,
-      saved.createdAt,
+      savedResult.id,
+      savedResult.concertName,
+      savedResult.userName,
+      savedResult.userId,
+      savedResult.action,
+      savedResult.createdAt,
     );
   }
 

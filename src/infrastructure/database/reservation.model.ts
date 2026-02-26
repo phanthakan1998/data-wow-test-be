@@ -8,7 +8,7 @@ import {
 
 @Entity({ name: 'reservations' })
 @Unique(['concertId', 'userId'])
-export class ReservationOrmEntity {
+export class ReservationEntityModel {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 

@@ -8,7 +8,7 @@ import {
 import { HistoryAction } from '../common/enums/history';
 
 @Entity({ name: 'history' })
-export class HistoryOrmEntity {
+export class HistoryEntityModel {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

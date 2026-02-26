@@ -4,24 +4,24 @@ import { Repository } from 'typeorm';
 
 import { ConcertRepositoryModel } from 'src/domain/repositories/concert.repository';
 import { Concert } from 'src/domain/entities/concert.entity';
-import { ConcertOrmEntity } from '../database/concert.model';
+import { ConcertEntityModel } from '../database/concert.model';
 
 @Injectable()
 export class ConcertRepository implements ConcertRepositoryModel {
   constructor(
-    @InjectRepository(ConcertOrmEntity)
-    private readonly concertRepository: Repository<ConcertOrmEntity>,
+    @InjectRepository(ConcertEntityModel)
+    private readonly concertRepository: Repository<ConcertEntityModel>,
   ) {}
 
   async create(concert: Concert): Promise<Concert> {
     const entity = this.concertRepository.create(concert);
-    const saved = await this.concertRepository.save(entity);
+    const savedResult = await this.concertRepository.save(entity);
 
     return new Concert(
-      saved.id,
-      saved.name,
-      saved.description,
-      saved.totalSeats,
+      savedResult.id,
+      savedResult.name,
+      savedResult.description,
+      savedResult.totalSeats,
     );
   }
 

@@ -3,13 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ReservationRepositoryModel } from 'src/domain/repositories/reservation.repository';
 import { Reservation } from 'src/domain/entities/reservation.entity';
-import { ReservationOrmEntity } from '../database/reservation.model';
+import { ReservationEntityModel } from '../database/reservation.model';
 
 @Injectable()
 export class ReservationRepository implements ReservationRepositoryModel {
   constructor(
-    @InjectRepository(ReservationOrmEntity)
-    private readonly reservationRepository: Repository<ReservationOrmEntity>,
+    @InjectRepository(ReservationEntityModel)
+    private readonly reservationRepository: Repository<ReservationEntityModel>,
   ) {}
 
   async findAll(): Promise<Reservation[]> {
@@ -28,19 +28,19 @@ export class ReservationRepository implements ReservationRepositoryModel {
   }
 
   async create(reservation: Reservation): Promise<Reservation> {
-    const orm = this.reservationRepository.create({
+    const model = this.reservationRepository.create({
       id: reservation.id,
       concertId: reservation.concertId,
       userId: reservation.userId,
     });
 
-    const saved = await this.reservationRepository.save(orm);
+    const savedResult = await this.reservationRepository.save(model);
 
     return new Reservation(
-      saved.id,
-      saved.concertId,
-      saved.userId,
-      saved.isCanceled,
+      savedResult.id,
+      savedResult.concertId,
+      savedResult.userId,
+      savedResult.isCanceled,
     );
   }
 
