@@ -46,7 +46,7 @@ presentation/ – Controllers (HTTP layer)
 
 ## Database Table
 
-- concert
+### concert
 Stores concert information.
 
 id – Unique identifier
@@ -59,7 +59,7 @@ totalSeats – Total available seats
 
 createdAt – Creation timestamp
 
-- reservation
+### reservation
 
 Stores user reservations.
 
@@ -73,7 +73,7 @@ status – Reservation status (active/cancelled)
 
 createdAt – Reservation timestamp
 
-- history
+### history
 
 Stores reservation activity logs.
 
