@@ -96,4 +96,16 @@ MySQL2 – MySQL database driver used by TypeORM.
 
 class-validator / class-transformer – Used for request validation and DTO transformation.
 
+### Backend Optimization
+
+- **Database Indexing** – Add indexes on frequently queried columns.
+- **Caching – Cache frequently accessed data like concert lists.
+- **Horizontal Scaling** – Run multiple backend instances behind a load balancer.
+- **Asynchronous Processing / Queue / Event emiter** – Use background jobs for non-critical tasks.
+- 
+### How to handle many users reserving tickets at the same time?
+- Add a UNIQUE constraint on (concertId, seatNumber)
+- Use transactions when creating reservations to lock row.
+
+
 
