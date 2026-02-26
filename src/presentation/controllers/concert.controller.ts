@@ -41,7 +41,6 @@ export class ConcertController {
   @Get('history')
   async getAllHisory(): Promise<HistoryLog[]> {
     const historyLogs = await this.concertUseCase.getHistory();
-    console.log({ historyLogs });
 
     return historyLogs;
   }

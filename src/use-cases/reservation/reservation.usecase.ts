@@ -51,7 +51,7 @@ export class ReservationUseCase {
         randomUUID(),
         concertId,
         userId,
-        true,
+        false,
       );
 
       await this.reservationRepository.create(reservation);
@@ -79,6 +79,20 @@ export class ReservationUseCase {
       userId,
       true,
     );
+    const userName = 'John';
+
+    const concert = await this.concertRepository.findById(concertId);
+
+    const history = new HistoryLog(
+      randomUUID(),
+      concert?.name ?? '',
+      userName,
+      userId,
+      HistoryAction.CANCEL,
+      new Date(),
+    );
+
+    await this.historyRepository.create(history);
   }
 
   async getUserReservations(

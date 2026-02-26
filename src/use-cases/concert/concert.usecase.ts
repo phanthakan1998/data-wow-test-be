@@ -39,8 +39,8 @@ export class ConcertUseCase {
 
   async getDashboardSummary(): Promise<IDashBoardResponseDto> {
     const totalSeats = await this.concertRepository.sumTotalSeats();
-    const totalReserved = await this.reservationRepository.countByStatus(true);
-    const totalCanceled = await this.reservationRepository.countByStatus(false);
+    const totalReserved = await this.reservationRepository.countByStatus(false);
+    const totalCanceled = await this.reservationRepository.countByStatus(true);
 
     return {
       totalSeats,
